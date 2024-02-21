@@ -1,5 +1,5 @@
 import mongoose, {Schema} from "mongoose";
-import { Jwt } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt"
 
 const userSchema = new Schema({
@@ -49,7 +49,7 @@ const userSchema = new Schema({
 
 userSchema.pre("save", async function (next){ // we are using a pre middleware where whenever a user is saving its data we want save it's password encrypted
     if(!this.isModified("password"))return next();// if the user is changing any field in the userschema or updating it will again encrypt the password and we don't want that so to prevent that we writing this condition
-    this.password = bcrypt.hash(this.password, 10);
+    this.password = await bcrypt.hash(this.password, 10);
 })
 
 userSchema.methods.isPasswordCorrect = async function (password){
